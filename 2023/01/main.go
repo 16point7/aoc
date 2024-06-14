@@ -9,5 +9,6 @@ import (
 var input []byte
 
 func main() {
-	fmt.Println(part1(input))
+	fmt.Printf("part1: %d\n", part1(input))
+	fmt.Printf("part2: %d\n", part2(input))
 }
