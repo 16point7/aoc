@@ -1,6 +1,6 @@
 package main
 
-func part1(input []byte) int {
+func part1(input string) int {
 	var res int
 	for i := 0; i < len(input); i++ {
 		if input[i] == '\n' {
@@ -13,7 +13,7 @@ func part1(input []byte) int {
 	return res
 }
 
-func part1line(line []byte) int {
+func part1line(line string) int {
 	var l int
 	for i := 0; i < len(line); i++ {
 		if c := line[i]; c >= '0' && c <= '9' {

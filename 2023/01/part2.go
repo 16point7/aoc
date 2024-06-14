@@ -1,6 +1,6 @@
 package main
 
-func part2(input []byte) int {
+func part2(input string) int {
 	var res int
 	for i := 0; i < len(input); i++ {
 		if input[i] == '\n' {
@@ -14,21 +14,21 @@ func part2(input []byte) int {
 }
 
 var numbers = []struct {
-	txt []byte
+	txt string
 	val int
 }{
-	{[]byte("one"), 1},
-	{[]byte("two"), 2},
-	{[]byte("three"), 3},
-	{[]byte("four"), 4},
-	{[]byte("five"), 5},
-	{[]byte("six"), 6},
-	{[]byte("seven"), 7},
-	{[]byte("eight"), 8},
-	{[]byte("nine"), 9},
+	{"one", 1},
+	{"two", 2},
+	{"three", 3},
+	{"four", 4},
+	{"five", 5},
+	{"six", 6},
+	{"seven", 7},
+	{"eight", 8},
+	{"nine", 9},
 }
 
-func part2line(line []byte) int {
+func part2line(line string) int {
 	var l int
 outer1:
 	for i := 0; i < len(line); i++ {
@@ -61,7 +61,7 @@ outer2:
 	return l*10 + r
 }
 
-func matchLeft(a, b []byte) bool {
+func matchLeft(a, b string) bool {
 	if len(b) > len(a) {
 		return false
 	}
@@ -73,7 +73,7 @@ func matchLeft(a, b []byte) bool {
 	return true
 }
 
-func matchRight(a, b []byte) bool {
+func matchRight(a, b string) bool {
 	if len(b) > len(a) {
 		return false
 	}

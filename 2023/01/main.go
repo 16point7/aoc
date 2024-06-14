@@ -6,7 +6,7 @@ import (
 )
 
 //go:embed input.txt
-var input []byte
+var input string
 
 func main() {
 	fmt.Printf("part1: %d\n", part1(input))
