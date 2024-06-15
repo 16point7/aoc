@@ -1,5 +1,49 @@
 package main
 
+import (
+	_ "embed"
+	"fmt"
+)
+
+//go:embed input.txt
+var input string
+
+func main() {
+	fmt.Printf("part1: %d\n", part1(input))
+	fmt.Printf("part2: %d\n", part2(input))
+}
+
+func part1(input string) int {
+	var res int
+	for i := 0; i < len(input); i++ {
+		if input[i] == '\n' {
+			res += part1line(input[:i])
+			input = input[i+1:]
+			i = 0
+		}
+	}
+	res += part1line(input)
+	return res
+}
+
+func part1line(line string) int {
+	var l int
+	for i := 0; i < len(line); i++ {
+		if c := line[i]; c >= '0' && c <= '9' {
+			l = int(c - '0')
+			break
+		}
+	}
+	var r int
+	for i := len(line) - 1; i > -1; i-- {
+		if c := line[i]; c >= '0' && c <= '9' {
+			r = int(c - '0')
+			break
+		}
+	}
+	return l*10 + r
+}
+
 func part2(input string) int {
 	var res int
 	for i := 0; i < len(input); i++ {

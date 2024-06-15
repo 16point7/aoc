@@ -1,9 +1,18 @@
 package main
 
 import (
+	_ "embed"
+	"fmt"
 	"strconv"
 	"strings"
 )
+
+//go:embed input.txt
+var input string
+
+func main() {
+	fmt.Println(part1(input))
+}
 
 func part1(input string) int {
 	res := 0
