@@ -30,7 +30,7 @@ var numbers = []struct {
 
 func part2line(line string) int {
 	var l int
-outer1:
+l2r:
 	for i := 0; i < len(line); i++ {
 		if c := line[i]; c >= '0' && c <= '9' {
 			l = int(c - '0')
@@ -39,13 +39,13 @@ outer1:
 		for _, n := range numbers {
 			if matchLeft(line[i:], n.txt) {
 				l = n.val
-				break outer1
+				break l2r
 			}
 		}
 
 	}
 	var r int
-outer2:
+r2l:
 	for i := len(line) - 1; i > -1; i-- {
 		if c := line[i]; c >= '0' && c <= '9' {
 			r = int(c - '0')
@@ -54,7 +54,7 @@ outer2:
 		for _, n := range numbers {
 			if matchRight(line[:i+1], n.txt) {
 				r = n.val
-				break outer2
+				break r2l
 			}
 		}
 	}
