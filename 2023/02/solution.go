@@ -12,6 +12,7 @@ var input string
 
 func main() {
 	fmt.Println(part1(input))
+	fmt.Println(part2(input))
 }
 
 func part1(input string) int {
@@ -33,12 +34,6 @@ func part1(input string) int {
 	return res
 }
 
-const (
-	rlimit = 12
-	glimit = 13
-	blimit = 14
-)
-
 func part1line(line string) (int, bool) {
 	before, after, _ := strings.Cut(line[5:], ": ")
 	game, _ := strconv.Atoi(before)
@@ -47,19 +42,53 @@ func part1line(line string) (int, bool) {
 		for _, marble := range strings.Split(set, ", ") {
 			before, after, _ := strings.Cut(marble, " ")
 			count, _ := strconv.Atoi(before)
-			r, g, b := 0, 0, 0
+			var limit int
 			switch after {
 			case "red":
-				r = count
+				limit = 12
 			case "green":
-				g = count
+				limit = 13
 			case "blue":
-				b = count
+				limit = 14
 			}
-			if r > rlimit || g > glimit || b > blimit {
+			if count > limit {
 				return game, false
 			}
 		}
 	}
 	return game, true
+}
+
+func part2(input string) int {
+	res := 0
+	for i := 0; i < len(input); i++ {
+		if input[i] == '\n' {
+			res += part2line(input[:i])
+			input = input[i+1:]
+			i = 0
+		}
+	}
+	res += part2line(input)
+	return res
+}
+
+func part2line(line string) int {
+	_, after, _ := strings.Cut(line, ": ")
+
+	r, g, b := 1, 1, 1
+	for _, set := range strings.Split(after, "; ") {
+		for _, marble := range strings.Split(set, ", ") {
+			before, after, _ := strings.Cut(marble, " ")
+			count, _ := strconv.Atoi(before)
+			switch after {
+			case "red":
+				r = max(r, count)
+			case "green":
+				g = max(g, count)
+			case "blue":
+				b = max(b, count)
+			}
+		}
+	}
+	return r * g * b
 }
