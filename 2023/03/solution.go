@@ -1,8 +1,17 @@
 package main
 
 import (
+	_ "embed"
+	"fmt"
 	"strings"
 )
+
+//go:embed input.txt
+var input string
+
+func main() {
+	fmt.Println(part1(input))
+}
 
 func part1(input string) int {
 	matrix := strings.Split(input, "\n")
@@ -18,9 +27,14 @@ func part1(input string) int {
 			}
 			if isPart {
 				res += part
+
 			}
 			part, isPart = 0, false
 		}
+		if isPart {
+			res += part
+		}
+
 	}
 	return res
 }
