@@ -39,26 +39,33 @@ func part1(input string) int {
 	return res
 }
 
-var directions = []struct{ j, i int }{
-	{1, 0},
-	{1, -1},
-	{1, 1},
-	{-1, 0},
-	{-1, -1},
-	{-1, 1},
-	{0, -1},
-	{0, 1},
-}
-
 func hasSymbol(matrix []string, j, i int) bool {
-	for _, d := range directions {
-		nextJ, nextI := j+d.j, i+d.i
-		if nextJ < 0 || nextI < 0 || nextJ >= len(matrix) || nextI >= len(matrix[nextJ]) {
-			continue
-		}
-		if c := matrix[nextJ][nextI]; c != '.' && (c < '0' || c > '9') {
+	left := i - 1
+	safeLeft := left > -1
+	if safeLeft && isSymbol(matrix[j][left]) {
+		return true
+	}
+	right := i + 1
+	safeRight := right < len(matrix[j])
+	if safeRight && isSymbol(matrix[j][right]) {
+		return true
+	}
+
+	if up := j - 1; up > -1 {
+		if isSymbol(matrix[up][i]) || safeLeft && isSymbol(matrix[up][left]) || safeRight && isSymbol(matrix[up][right]) {
 			return true
 		}
 	}
+
+	if down := j + 1; down < len(matrix) {
+		if isSymbol(matrix[down][i]) || safeLeft && isSymbol(matrix[down][left]) || safeRight && isSymbol(matrix[down][right]) {
+			return true
+		}
+	}
+
 	return false
+}
+
+func isSymbol(c byte) bool {
+	return c != '.' && (c < '0' || c > '9')
 }
