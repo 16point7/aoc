@@ -75,15 +75,15 @@ func isSymbol(c byte) bool {
 	return c != '.' && !isDigit(c)
 }
 
-const gear = '*'
+const gear byte = '*'
 
 func part2(input string) int {
 	matrix := strings.Split(input, "\n")
 
 	res := 0
 	for j, row := range matrix {
-		for i, c := range row {
-			if c == gear {
+		for i := 0; i < len(row); i++ {
+			if row[i] == gear {
 				gearRatio, isGear := inspectSurrounding(matrix, j, i)
 				if isGear {
 					res += gearRatio
