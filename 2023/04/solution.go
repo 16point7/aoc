@@ -11,20 +11,25 @@ var input string
 
 func main() {
 	fmt.Println(part1(input))
+	fmt.Println(part2(input))
 }
 
 func part1(input string) int {
 	res := 0
 	for _, line := range strings.Split(input, "\n") {
-		before, after1, _ := strings.Cut(line, " | ")
-		_, after2, _ := strings.Cut(before, ": ")
-		winningNums := getWinningNums(after2)
-		numMatch := countMatches(winningNums, after1)
-		if numMatch > 0 {
-			res += 1 << (numMatch - 1)
+		score := getScore(line)
+		if score > 0 {
+			res += 1 << (score - 1)
 		}
 	}
 	return res
+}
+
+func getScore(line string) int {
+	before, after1, _ := strings.Cut(line, " | ")
+	_, after2, _ := strings.Cut(before, ": ")
+	winningNums := getWinningNums(after2)
+	return countMatches(winningNums, after1)
 }
 
 func getWinningNums(s string) [100]bool {
@@ -59,6 +64,25 @@ func countMatches(winningNumbers [100]bool, s string) int {
 	}
 	if numSet && winningNumbers[num] {
 		res++
+	}
+	return res
+}
+
+func part2(input string) int {
+	lines := strings.Split(input, "\n")
+
+	todo := make([]int, len(lines)+1)
+	for j := range todo {
+		todo[j] = 1
+	}
+
+	res := 0
+	for j, line := range lines {
+		res += todo[j]
+		score := getScore(line)
+		for k, toAdd := j+1, todo[j]; score > 0; k, score = k+1, score-1 {
+			todo[k] += toAdd
+		}
 	}
 	return res
 }
