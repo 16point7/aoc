@@ -30,7 +30,11 @@ func main() {
 	if !ok {
 		log.Fatal("Failed to determine output directory")
 	}
-	dstDir := filepath.Join(filepath.Dir(caller), "..", strconv.Itoa(year), strconv.Itoa(day))
+	dayStr := strconv.Itoa(day)
+	if day < 10 {
+		dayStr = "0" + dayStr
+	}
+	dstDir := filepath.Join(filepath.Dir(caller), "..", strconv.Itoa(year), dayStr)
 
 	err := os.MkdirAll(dstDir, 0777)
 	if err != nil {
