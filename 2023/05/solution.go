@@ -112,5 +112,65 @@ func findNext(cur int, mapping []mapping) int {
 }
 
 func part2(input string) int {
-	return 0
+	seedRanges, after := getSeedRanges(input)
+	mappings := getMappings(after)
+	return getMinLocByRange(seedRanges, mappings)
+}
+
+type seedRange struct {
+	i, f int
+}
+
+func getSeedRanges(input string) ([]seedRange, string) {
+	seedRanges := make([]seedRange, 0, 32)
+
+	i := 0
+
+	for input[i] != ':' {
+		i++
+	}
+
+	i += 2
+
+	count, begin := 0, 0
+	for num := 0; true; i++ {
+		if c := input[i]; c >= '0' && c <= '9' {
+			num = num*10 + int(c-'0')
+		} else {
+			switch count {
+			case 0:
+				begin = num
+				count++
+			case 1:
+				seedRanges = append(seedRanges, seedRange{i: begin, f: begin + num})
+				count = 0
+			}
+			if c == '\n' {
+				break
+			}
+			num = 0
+		}
+	}
+
+	return seedRanges, input[i:]
+}
+
+func getMinLocByRange(seedRanges []seedRange, mappings [7][]mapping) int {
+	for _, m := range mappings {
+		slices.SortFunc(m, func(a, b mapping) int {
+			return a.startI - b.startI
+		})
+	}
+
+	minLoc := math.MaxInt
+	for _, sr := range seedRanges {
+		for seed := sr.i; seed < sr.f; seed++ {
+			cur := seed
+			for _, mapping := range mappings {
+				cur = findNext(cur, mapping)
+			}
+			minLoc = min(cur, minLoc)
+		}
+	}
+	return minLoc
 }
