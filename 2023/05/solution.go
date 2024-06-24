@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 	"math"
+	"runtime"
 	"slices"
 	"strings"
 )
@@ -94,8 +95,8 @@ func getMinLoc(seeds []int, mappings [7][]mapping) int {
 	minLoc := math.MaxInt
 	for _, seed := range seeds {
 		cur := seed
-		for _, mapping := range mappings {
-			cur = findNext(cur, mapping)
+		for _, m := range mappings {
+			cur = findNext(cur, m)
 		}
 		minLoc = min(cur, minLoc)
 	}
@@ -162,15 +163,67 @@ func getMinLocByRange(seedRanges []seedRange, mappings [7][]mapping) int {
 		})
 	}
 
+	batches := getBatches(seedRanges, runtime.NumCPU())
+
+	ch := make(chan int, len(batches))
+	for _, batch := range batches {
+		go processBatch(batch, mappings, ch)
+	}
+
 	minLoc := math.MaxInt
+	for i := 0; i < len(batches); i++ {
+		minLoc = min(minLoc, <-ch)
+	}
+
+	return minLoc
+}
+
+func getBatches(seedRanges []seedRange, count int) [][]seedRange {
+	batches := make([][]seedRange, 0, count)
+
+	totalSize := 0
 	for _, sr := range seedRanges {
+		totalSize += sr.f - sr.i
+	}
+
+	batchSize := totalSize / count
+	batchFill := totalSize % count
+
+	srIdx, srStart := 0, seedRanges[0].i
+	for i := 0; i < cap(batches); i++ {
+		batch := []seedRange{}
+		remaining := batchSize
+		if batchFill > 0 {
+			remaining++
+			batchFill--
+		}
+		for remaining > 0 {
+			taken := min(remaining, seedRanges[srIdx].f-srStart)
+			batch = append(batch, seedRange{i: srStart, f: srStart + taken})
+			remaining -= taken
+			if srIdx < len(seedRanges)-1 && srStart+taken >= seedRanges[srIdx].f {
+				srIdx++
+				srStart = seedRanges[srIdx].i
+			} else {
+				srStart += taken
+			}
+		}
+		batches = append(batches, batch)
+	}
+
+	return batches
+}
+
+func processBatch(batch []seedRange, mappings [7][]mapping, ch chan<- int) {
+	minLoc := math.MaxInt
+	for _, sr := range batch {
 		for seed := sr.i; seed < sr.f; seed++ {
 			cur := seed
-			for _, mapping := range mappings {
-				cur = findNext(cur, mapping)
+			for _, m := range mappings {
+				cur = findNext(cur, m)
 			}
 			minLoc = min(cur, minLoc)
 		}
 	}
-	return minLoc
+	ch <- minLoc
 }
