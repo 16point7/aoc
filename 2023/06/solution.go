@@ -33,9 +33,9 @@ func part1(input string) int {
 }
 
 func getData(input string) []data {
-	lines := strings.SplitN(input, "\n", 2)
-	_, timeline, _ := strings.Cut(lines[0], ":")
-	_, distline, _ := strings.Cut(lines[1], ":")
+	first, second, _ := strings.Cut(input, "\n")
+	_, timeline, _ := strings.Cut(first, ":")
+	_, distline, _ := strings.Cut(second, ":")
 
 	res := make([]data, 0, 4)
 
@@ -65,5 +65,21 @@ func nextNum(line string, i int) (num, lastI int) {
 }
 
 func part2(input string) int {
-	return 0
+	first, second, _ := strings.Cut(input, "\n")
+	time := getData2(first)
+	dist := getData2(second) + 0.01
+	sqrtb2minus4ac := math.Sqrt(time*time - 4*dist)
+	r1 := int(math.Ceil(((time - sqrtb2minus4ac) / 2)))
+	r2 := int(math.Floor(((time + sqrtb2minus4ac) / 2)))
+	return r2 - r1 + 1
+}
+
+func getData2(input string) float64 {
+	num := 0
+	for i := 0; i < len(input); i++ {
+		if c := input[i]; c >= '0' && c <= '9' {
+			num = num*10 + int(c-'0')
+		}
+	}
+	return float64(num)
 }

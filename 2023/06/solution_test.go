@@ -16,14 +16,15 @@ func TestPart1(t *testing.T) {
 
 func BenchmarkPart1(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		part1(input1)
+		part1(input)
 	}
 }
 
-const input2 = ``
+const input2 = `Time:      7  15   30
+Distance:  9  40  200`
 
 func TestPart2(t *testing.T) {
-	want := 0
+	want := 71503
 	got := part2(input2)
 
 	if got != want {
@@ -33,6 +34,6 @@ func TestPart2(t *testing.T) {
 
 func BenchmarkPart2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		part2(input2)
+		part2(input)
 	}
 }
