@@ -2,10 +2,11 @@ package main
 
 import "testing"
 
-const input1 = ``
+const input1 = `Time:      7  15   30
+Distance:  9  40  200`
 
 func TestPart1(t *testing.T) {
-	want := 0
+	want := 288
 	got := part1(input1)
 
 	if got != want {
