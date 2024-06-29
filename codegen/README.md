@@ -1,6 +1,6 @@
 # codegen
 
-Used to initialite a new day directory.
+Used to initialite a new solution directory.
 
 ## Example
 
