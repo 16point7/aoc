@@ -27,16 +27,19 @@ func BenchmarkPart1(b *testing.B) {
 	}
 }
 
-func BenchmarkPart1r(b *testing.B) {
-	for i := 0; i < b.N; i++ {
-		part1r(input1)
-	}
-}
+const input2 = `LR
 
-const input2 = ``
+11A = (11B, XXX)
+11B = (XXX, 11Z)
+11Z = (11B, XXX)
+22A = (22B, XXX)
+22B = (22C, 22C)
+22C = (22Z, 22Z)
+22Z = (22B, 22B)
+XXX = (XXX, XXX)`
 
 func TestPart2(t *testing.T) {
-	want := 0
+	want := 6
 	got := part2(input2)
 
 	if got != want {
