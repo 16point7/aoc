@@ -132,25 +132,23 @@ func getRank(cards []int) int {
 		c2[c]++
 	}
 
-	if c2[5] > 0 {
+	switch {
+	case c2[5] > 0:
 		return fiveOfAKind
-	}
-	if c2[4] > 0 {
+	case c2[4] > 0:
 		return fourOfAKind
-	}
-	if c2[3] > 0 {
+	case c2[3] > 0:
 		if c2[2] > 0 {
 			return fullHouse
 		}
 		return threeOfAKind
-	}
-	if c2[2] == 2 {
+	case c2[2] == 2:
 		return twoPair
-	}
-	if c2[2] == 1 {
+	case c2[2] == 1:
 		return onePair
+	default:
+		return highCard
 	}
-	return highCard
 }
 
 func part2(input string) int {
