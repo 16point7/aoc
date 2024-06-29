@@ -27,6 +27,12 @@ func part1(input string) int {
 	return getRes(hands)
 }
 
+func part2(input string) int {
+	hands := parseHands(input, true)
+	sort(hands)
+	return getRes(hands)
+}
+
 func parseHands(input string, jokers bool) []hand {
 	hands := make([]hand, 0, 32)
 	for i := 0; i < len(input); i++ {
@@ -199,10 +205,4 @@ func getRes(hands []hand) int {
 		res += (i + 1) * hand.bid
 	}
 	return res
-}
-
-func part2(input string) int {
-	hands := parseHands(input, true)
-	sort(hands)
-	return getRes(hands)
 }
