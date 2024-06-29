@@ -2,10 +2,18 @@ package main
 
 import "testing"
 
-const input1 = ``
+const input1 = `RL
+
+AAA = (BBB, CCC)
+BBB = (DDD, EEE)
+CCC = (ZZZ, GGG)
+DDD = (DDD, DDD)
+EEE = (EEE, EEE)
+GGG = (GGG, GGG)
+ZZZ = (ZZZ, ZZZ)`
 
 func TestPart1(t *testing.T) {
-	want := 0
+	want := 2
 	got := part1(input1)
 
 	if got != want {
@@ -16,6 +24,12 @@ func TestPart1(t *testing.T) {
 func BenchmarkPart1(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		part1(input1)
+	}
+}
+
+func BenchmarkPart1r(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		part1r(input1)
 	}
 }
 
