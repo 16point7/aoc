@@ -23,10 +23,14 @@ func BenchmarkPart1(b *testing.B) {
 	}
 }
 
-const input2 = ``
+const input2 = `32T3K 765
+T55J5 684
+KK677 28
+KTJJT 220
+QQQJA 483`
 
 func TestPart2(t *testing.T) {
-	want := 0
+	want := 5905
 	got := part2(input2)
 
 	if got != want {
