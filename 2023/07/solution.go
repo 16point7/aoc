@@ -22,41 +22,25 @@ type hand struct {
 }
 
 func part1(input string) int {
-	hands := parseHands(input)
-
-	slices.SortFunc(hands, func(h1, h2 hand) int {
-		if rankDiff := h1.rank - h2.rank; rankDiff != 0 {
-			return rankDiff
-		}
-		for i := 0; i < len(h1.cards); i++ {
-			if valDiff := h1.cards[i] - h2.cards[i]; valDiff != 0 {
-				return valDiff
-			}
-		}
-		return 0
-	})
-
-	res := 0
-	for i, hand := range hands {
-		res += (i + 1) * hand.bid
-	}
-	return res
+	hands := parseHands(input, false)
+	sort(hands)
+	return getRes(hands)
 }
 
-func parseHands(input string) []hand {
+func parseHands(input string, jokers bool) []hand {
 	hands := make([]hand, 0, 32)
 	for i := 0; i < len(input); i++ {
 		if input[i] == '\n' {
-			hands = append(hands, parseHand(input[:i]))
+			hands = append(hands, parseHand(input[:i], jokers))
 			input = input[i+1:]
 			i = 0
 		}
 	}
-	hands = append(hands, parseHand(input))
+	hands = append(hands, parseHand(input, jokers))
 	return hands
 }
 
-func parseHand(line string) hand {
+func parseHand(line string, jokers bool) hand {
 	before, after, _ := strings.Cut(line, " ")
 
 	bid := 0
@@ -64,21 +48,23 @@ func parseHand(line string) hand {
 		bid = bid*10 + int(after[i]-'0')
 	}
 
-	cards := getCards(before)
-	rank := getRank(cards)
+	cards := getCards(before, jokers)
+	rank := getRank(cards, jokers)
 
 	return hand{bid: bid, cards: cards, rank: rank}
 }
 
-func getCards(input string) []int {
+func getCards(input string, jokers bool) []int {
 	cards := make([]int, len(input))
 	for i := 0; i < len(input); i++ {
-		cards[i] = getValue(input[i])
+		cards[i] = getValue(input[i], jokers)
 	}
 	return cards
 }
 
-func getValue(card byte) int {
+const jokerVal int = -1
+
+func getValue(card byte, jokers bool) int {
 	switch card {
 	case '2':
 		return 0
@@ -96,6 +82,26 @@ func getValue(card byte) int {
 		return 6
 	case '9':
 		return 7
+	}
+
+	if jokers {
+		switch card {
+		case 'T':
+			return 8
+		case 'Q':
+			return 9
+		case 'K':
+			return 10
+		case 'A':
+			return 11
+		case 'J':
+			return jokerVal
+		}
+
+		return -2
+	}
+
+	switch card {
 	case 'T':
 		return 8
 	case 'J':
@@ -106,9 +112,9 @@ func getValue(card byte) int {
 		return 11
 	case 'A':
 		return 12
-	default:
-		return -1
 	}
+
+	return -2
 }
 
 const (
@@ -121,10 +127,32 @@ const (
 	fiveOfAKind
 )
 
-func getRank(cards []int) int {
+func getRank(cards []int, jokers bool) int {
 	c1 := [13]int{}
-	for _, c := range cards {
-		c1[c]++
+	if jokers {
+		jokerCount := 0
+		for _, c := range cards {
+			if c == jokerVal {
+				jokerCount++
+			} else {
+				c1[c]++
+			}
+		}
+
+		if jokerCount > 0 {
+			maxK, maxV := 0, 0
+			for i, v := range c1 {
+				if v > maxV {
+					maxK, maxV = i, v
+				}
+			}
+			c1[maxK] += jokerCount
+		}
+
+	} else {
+		for _, c := range cards {
+			c1[c]++
+		}
 	}
 
 	c2 := [6]int{}
@@ -151,6 +179,30 @@ func getRank(cards []int) int {
 	}
 }
 
+func sort(hands []hand) {
+	slices.SortFunc(hands, func(h1, h2 hand) int {
+		if rankDiff := h1.rank - h2.rank; rankDiff != 0 {
+			return rankDiff
+		}
+		for i := 0; i < len(h1.cards); i++ {
+			if valDiff := h1.cards[i] - h2.cards[i]; valDiff != 0 {
+				return valDiff
+			}
+		}
+		return 0
+	})
+}
+
+func getRes(hands []hand) int {
+	res := 0
+	for i, hand := range hands {
+		res += (i + 1) * hand.bid
+	}
+	return res
+}
+
 func part2(input string) int {
-	return 0
+	hands := parseHands(input, true)
+	sort(hands)
+	return getRes(hands)
 }
