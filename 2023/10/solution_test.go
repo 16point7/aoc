@@ -2,10 +2,14 @@ package main
 
 import "testing"
 
-const input1 = ``
+const input1 = `..F7.
+.FJ|.
+SJ.L7
+|F--J
+LJ...`
 
 func TestPart1(t *testing.T) {
-	want := 0
+	want := 8
 	got := part1(input1)
 
 	if got != want {
