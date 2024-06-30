@@ -2,10 +2,12 @@ package main
 
 import "testing"
 
-const input1 = ``
+const input1 = `0 3 6 9 12 15
+1 3 6 10 15 21
+10 13 16 21 30 45`
 
 func TestPart1(t *testing.T) {
-	want := 0
+	want := 114
 	got := part1(input1)
 
 	if got != want {
