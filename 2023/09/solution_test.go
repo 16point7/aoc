@@ -21,10 +21,12 @@ func BenchmarkPart1(b *testing.B) {
 	}
 }
 
-const input2 = ``
+const input2 = `0 3 6 9 12 15
+1 3 6 10 15 21
+10 13 16 21 30 45`
 
 func TestPart2(t *testing.T) {
-	want := 0
+	want := 2
 	got := part2(input2)
 
 	if got != want {

@@ -19,7 +19,7 @@ func part1(input string) int {
 	nums := make([]int, 0, 64)
 	for {
 		before, after, found := strings.Cut(input, "\n")
-		res += processLine(before, nums)
+		res += processLine(before, nums, true)
 		if !found {
 			break
 		}
@@ -28,21 +28,48 @@ func part1(input string) int {
 	return res
 }
 
-func processLine(line string, nums []int) int {
+func part2(input string) int {
+	res := 0
+	nums := make([]int, 0, 64)
+	for {
+		before, after, found := strings.Cut(input, "\n")
+		res += processLine(before, nums, false)
+		if !found {
+			break
+		}
+		input = after
+	}
+	return res
+}
+
+func processLine(line string, nums []int, forward bool) int {
 	for len(line) > 0 {
 		before, after, _ := strings.Cut(line, " ")
 		nums = append(nums, atoi(before))
 		line = after
 	}
 
-	end := len(nums) - 1
-	for {
-		for i := 0; i < end; i++ {
-			nums[i] = nums[i+1] - nums[i]
+	if forward {
+		end := len(nums) - 1
+		for {
+			for i := 0; i < end; i++ {
+				nums[i] = nums[i+1] - nums[i]
+			}
+			if allZeroes(nums[:end]) {
+				break
+			}
+			end--
 		}
-		end--
-		if allZeroes(nums, end) {
-			break
+	} else {
+		start := 0
+		for {
+			for i := len(nums) - 1; i > start; i-- {
+				nums[i] = nums[i-1] - nums[i]
+			}
+			if allZeroes(nums[start+1:]) {
+				break
+			}
+			start++
 		}
 	}
 
@@ -71,15 +98,11 @@ func atoi(input string) int {
 	return res
 }
 
-func allZeroes(nums []int, end int) bool {
-	for i := 0; i <= end; i++ {
+func allZeroes(nums []int) bool {
+	for i := 0; i < len(nums); i++ {
 		if nums[i] != 0 {
 			return false
 		}
 	}
 	return true
-}
-
-func part2(input string) int {
-	return 0
 }
